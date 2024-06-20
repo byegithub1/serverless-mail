@@ -1,0 +1,4 @@
+# Ignore all handlebars files:
+**/*.hbs
+.github/**
+CHANGELOG.md

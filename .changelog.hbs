@@ -1,0 +1,31 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. Dates are displayed in UTC.
+
+{{#each releases}}
+  {{#if href}}
+    ## [{{#if major}}Major{{else}}Minor{{/if}}] Version-[{{title}}]({{href}}), {{niceDate}}
+  {{else}}
+    ## [{{#if major}}Major{{else}}Minor{{/if}}] Version-{{title}}, {{niceDate}}
+  {{/if}}
+
+  {{#if summary}}
+    {{summary}}
+  {{/if}}
+
+  {{#if tag}}
+    > **Commits:**
+  {{/if}}
+
+  {{#each commits}}
+    - [[`{{shorthash}}`]({{href}})] - {{#if breaking}}**`!!!`** {{/if}}{{subject}}{{#if href}}{{/if}}
+  {{/each}}
+
+  {{#each fixes}}
+    - {{#if commit.breaking}}**`!!!`** {{/if}}[{{#if href}}[`!{{id}}`]({{href}}){{/if}}] - {{commit.subject}}{{#each fixes}}{{/each}}
+  {{/each}}
+
+  {{#each merges}}
+    - {{#if commit.breaking}}**`!!!`** {{/if}}[{{#if href}}[`!{{id}}`]({{href}}){{/if}}] - {{message}}
+  {{/each}}
+{{/each}}

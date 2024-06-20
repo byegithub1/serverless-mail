@@ -1,0 +1,68 @@
+{
+  "name": "serverless-mail",
+  "description": "Serverless email solution",
+  "version": "0.1.1",
+  "module": "index.ts",
+  "type": "module",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">= 20.13.1",
+    "npm": ">= 10.8.0"
+  },
+  "scripts": {
+    "scripts:prepare": "cross-env npm-run-all hooks:pre-commit",
+    "hooks:pre-commit": "shx cp scripts/pre-commit .git/hooks/ && shx chmod +x .git/hooks/pre-commit && echo 'pre-commit'",
+    "dev": "tsc-watch --onSuccess \"bun run build && node dist/index.js\"",
+    "start": "npm i && npm run build && node dist/index.js",
+    "build": "shx rm -rf dist && bun builder.ts",
+    "lint": "prettier . --check --config .prettierrc.cjs && eslint . -c eslint.config.js",
+    "fmt": "prettier . --write --config .prettierrc.cjs",
+    "version": "bun scripts/changelog.js --remote origin",
+    "cleanup": "rm -rf dist node_modules package-lock.json bun.lockb"
+  },
+  "auto-changelog": {
+    "template": ".changelog.hbs",
+    "output": "CHANGELOG.md",
+    "unreleased": false,
+    "commitLimit": false
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.5.0",
+    "@types/bun": "latest",
+    "@types/elliptic": "^6.4.18",
+    "@types/eslint__js": "^8.42.3",
+    "@types/ini": "^4.1.1",
+    "@types/inquirer": "^9.0.7",
+    "@types/mailparser": "^3.4.4",
+    "auto-changelog": "^2.4.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "globals": "^15.6.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.3.2",
+    "shx": "^0.3.4",
+    "tsc-watch": "^6.2.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.13.1",
+    "yargs": "^17.7.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.598.0",
+    "@aws-sdk/client-s3": "^3.598.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "elliptic": "^6.5.5",
+    "ini": "^4.1.3",
+    "inquirer": "^9.2.23",
+    "inquirer-prompt-suggest": "^0.1.0",
+    "mailparser": "^3.7.1",
+    "moment": "^2.30.1",
+    "open": "^10.1.0",
+    "ora": "^8.0.1",
+    "table": "^6.8.2"
+  }
+}
