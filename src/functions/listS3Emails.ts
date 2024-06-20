@@ -10,8 +10,7 @@ import { s3EncryptedEmails } from 'helpers/symmetric'
 import { chalk_error, chalk_info, chalk_success } from 'helpers/chalks'
 
 /**
- * Lists the S3 emails in a table format.
- *
+ * @description Lists the S3 emails in a table format.
  * @returns {Promise<void>}
  */
 const handler = async (): Promise<void> => {
@@ -24,7 +23,7 @@ const handler = async (): Promise<void> => {
     const s3Emails = await s3EncryptedEmails()
 
     if (s3Emails.length >= 1) {
-      const columns: TableUserConfig['columns'] = [{ alignment: 'left' }, { alignment: 'left' }]
+      const columns: TableUserConfig['columns'] = [...Array(2).fill({ alignment: 'left' })]
       const dataEmails: unknown[][] = [
         [chalk_info('S3 Object Key'), chalk_info('Last Modified')],
         ...s3Emails.map(({ Key, LastModified }): unknown[] => [

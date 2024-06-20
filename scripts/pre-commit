@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-bun fmt
-bun lint
-bun version
+bun fmt || npm run fmt
+bun lint || npm run lint
+bun version || npm run version

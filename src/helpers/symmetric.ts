@@ -4,16 +4,15 @@ import Hexadecimal from 'helpers/hexadecimal'
 
 import { Buffer } from 'buffer'
 import { Readable } from 'stream'
+import { chalk_error } from 'helpers/chalks'
 import { existsSync, writeFileSync } from 'fs'
 import { Nvll, s3Client, kmsClient } from 'environment'
 import { createDecipheriv, type CipherKey } from 'crypto'
 import { DecryptCommand, type DecryptCommandOutput } from '@aws-sdk/client-kms'
 import { ListObjectsV2Command, GetObjectCommand, type ListObjectsV2CommandInput } from '@aws-sdk/client-s3'
-import { chalk_error } from './chalks'
 
 /**
- * Convert a readable stream into a Buffer.
- *
+ * @description Convert a readable stream into a Buffer.
  * @param {NodeJSReadableStream} stream - The stream to convert.
  * @returns {Promise<Buffer>} - A Promise that resolves to the converted Buffer.
  */
@@ -26,8 +25,7 @@ const streamToBuffer = (stream: NodeJSReadableStream): Promise<Buffer> =>
   })
 
 /**
- * Decrypts a symmetric encrypted data using AES-256-GCM algorithm.
- *
+ * @description Decrypts a symmetric encrypted data using AES-256-GCM algorithm.
  * @param {Buffer} key - The symmetric key used for decryption (Buffer).
  * @param {Buffer} encryptedData - The encrypted data to decrypt (Buffer).
  * @param {Buffer} iv - The initialization vector used for decryption (Buffer).
@@ -43,8 +41,7 @@ const symmetric = async (key: CipherKey, encryptedData: Buffer, iv: Buffer, auth
 }
 
 /**
- * Decrypts and saves an S3 email.
- *
+ * @description Decrypts and saves an S3 email.
  * @param {string} objectKey - The S3 object key of the email to decrypt.
  * @returns {Promise<{ filename: string } | undefined>} - The filename of the decrypted email, or undefined if decryption or saving fails.
  */
@@ -88,9 +85,7 @@ const decryptAndSaveEmail = async (objectKey: string): Promise<{ filename: strin
         const mailHexDump: string | boolean = Hexadecimal.hexDump(localEncrypted)
 
         writeFileSync(filename, mailHexDump as string, 'utf8')
-      } else {
-        writeFileSync(filename, decryptedData, 'utf8')
-      }
+      } else writeFileSync(filename, decryptedData, 'utf8')
       return { filename }
     }
   } catch (error: any) {
@@ -99,8 +94,7 @@ const decryptAndSaveEmail = async (objectKey: string): Promise<{ filename: strin
 }
 
 /**
- * Retrieves the list of encrypted emails from S3.
- *
+ * @description Retrieves the list of encrypted emails from S3.
  * @returns {Promise<{ Key: string; LastModified: Date }[]>} - The list of encrypted emails.
  */
 const s3EncryptedEmails = async (): Promise<{ Key: string; LastModified: Date | undefined }[]> => {

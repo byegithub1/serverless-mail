@@ -10,8 +10,7 @@ import { readLocalEmails } from 'functions/listLocalEmails'
 import { chalk_error, chalk_info, chalk_success } from 'helpers/chalks'
 
 /**
- * Searches for local emails based on sender and subject.
- *
+ * @description Searches for local emails based on sender and subject.
  * @param {string | undefined} from - The email sender to search for (case-insensitive).
  * @param {string | undefined} subject - The email subject to search for (case-insensitive).
  * @returns {Promise<EmailData[]>} An array of emails matching the search criteria.
@@ -26,8 +25,7 @@ const searchLocalEmails = async (from: string | undefined, subject: string | und
 }
 
 /**
- * Searches for local emails based on sender and subject.
- *
+ * @description Searches for local emails based on sender and subject.
  * @returns {Promise<void>}
  */
 const handler = async (): Promise<void> => {
@@ -43,13 +41,7 @@ const handler = async (): Promise<void> => {
     const foundEmails = await searchLocalEmails(from, subject)
     if (foundEmails.length) {
       clear()
-      const columns: TableUserConfig['columns'] = [
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'center' }
-      ]
+      const columns: TableUserConfig['columns'] = [...Array(4).fill({ alignment: 'left' }), { alignment: 'center' }]
       const dataEmails: unknown[][] = [
         [chalk_info('S3 Object Key'), chalk_info('From'), chalk_info('Received'), chalk_info('Subject'), chalk_info('Attachments')],
         ...foundEmails.map(({ ObjectKey, From, Received, Subject, Attachments }: EmailData): unknown[] => [
@@ -68,7 +60,7 @@ const handler = async (): Promise<void> => {
       spinner.fail(chalk_error('No emails found.'))
     }
   } catch (error: any) {
-    spinner.fail(chalk_error(`Error checking for new emails: ${error.message}`))
+    spinner.fail(chalk_error(`Error checking for emails: ${error.message}`))
   }
 }
 

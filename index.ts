@@ -1,8 +1,9 @@
-import inquirer from 'inquirer'
-
-import { clear } from 'helpers/common'
 import { Command } from 'commander'
+import { clear } from 'helpers/common'
+import { chalk_error } from 'helpers/chalks'
 import { initializeConfig } from 'environment'
+
+import inquirer, { type Answers } from 'inquirer'
 
 import { handler as handlerCheckNewEmails } from 'functions/checkNewEmails'
 import { handler as handlerListLocalEmails } from 'functions/listLocalEmails'
@@ -11,11 +12,14 @@ import { handler as handlerSearchLocalEmails } from 'functions/searchLocalEmails
 import { handler as handlerListS3Emails } from 'functions/listS3Emails'
 import { handler as handlerFetchS3Email } from 'functions/fetchS3Email'
 import { handler as handlerFetchAllS3Emails } from 'functions/fetchAllS3Emails'
-import { handler as handlerConfigurations } from 'functions/configurations'
-import { chalk_error } from 'helpers/chalks'
+import { handler as handlerEnvironments } from 'functions/environments'
 
-const mainMenu = async () => {
-  const choices = [
+/**
+ * @description Renders the main menu and handles user input.
+ * @returns {Promise<void>}
+ */
+const mainMenu = async (): Promise<void> => {
+  const choices: Answers[] = [
     { name: 'Check for new emails', value: 'option_1' },
     { name: 'List local emails', value: 'option_2' },
     { name: 'Open email', value: 'option_3' },
@@ -23,11 +27,16 @@ const mainMenu = async () => {
     { name: 'List S3 emails', value: 'option_5' },
     { name: 'Fetch an S3 email', value: 'option_6' },
     { name: 'Fetch all S3 emails', value: 'option_7' },
-    { name: 'Configurations', value: 'option_8' },
+    { name: 'Environments', value: 'option_8' },
     { name: 'Exit', value: 'option_9' }
   ]
 
-  const mainMenuHandlerAction = async (action: string) => {
+  /**
+   * @description Handles the user's selected action.
+   * @param {string} action - The selected action.
+   * @returns {Promise<void>}
+   */
+  const mainMenuHandlerAction = async (action: string): Promise<void> => {
     switch (action) {
       case 'option_1':
         await handlerCheckNewEmails()
@@ -51,10 +60,10 @@ const mainMenu = async () => {
         await handlerFetchAllS3Emails()
         break
       case 'option_8':
-        await handlerConfigurations()
+        await handlerEnvironments()
         break
       case 'option_9':
-        await confirmExit() // Call the confirmation function before exiting
+        await confirmExit()
         break
       default:
         console.error(chalk_error('Invalid option.'))
@@ -68,13 +77,12 @@ const mainMenu = async () => {
   await mainMenu()
 }
 
-const confirmExit = async () => {
-  const answers = await inquirer.prompt({
-    type: 'confirm',
-    name: 'confirmExit',
-    message: 'Are you sure you want to exit?',
-    default: true
-  })
+/**
+ * @description Confirms if the user wants to exit the program.
+ * @returns {Promise<void>} A promise that resolves when the user confirms the exit or when the menu is displayed.
+ */
+const confirmExit = async (): Promise<void> => {
+  const answers: { confirmExit: boolean } = await inquirer.prompt([{ type: 'confirm', name: 'confirmExit' }])
   if (answers.confirmExit) {
     clear()
     console.error(chalk_error(`© ${new Date().getFullYear()} NVLL | https://nvll.me ------------\n`))
@@ -90,7 +98,7 @@ const program: Command = new Command()
 program
   .name('Serverless Mail')
   .description('Serverless email solution')
-  .version('0.1.0')
+  .version('0.1.1')
   .description('Launch Serverless Mail')
   .action(async () => {
     clear()

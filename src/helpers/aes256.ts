@@ -9,8 +9,7 @@ export default class Aes256 {
   private static delimiter: string = Nvll.env.CIPHER_DELIMITER || 'f1f69ebc4e564c4c2d454e56454c4f5045bc9ef6f1'
 
   /**
-   * Imports a raw key into a CryptoKey.
-   *
+   * @description Imports a raw key into a CryptoKey.
    * @param {Uint8Array} key - The raw key to import.
    * @param {AesAlgorithmParams} algorithm - The algorithm parameters.
    * @return {Promise<CryptoKey>} The imported CryptoKey.
@@ -20,8 +19,7 @@ export default class Aes256 {
   }
 
   /**
-   * Encrypts a message using the specified algorithm.
-   *
+   * @description Encrypts a message using the specified algorithm.
    * @param {string} message - The message to encrypt.
    * @param {Uint8Array} key - The encryption key.
    * @param {AesAlgorithmParams} algorithmType - The algorithm to use for encryption.
@@ -69,8 +67,7 @@ export default class Aes256 {
   }
 
   /**
-   * Decrypts a cipher text using the specified algorithm.
-   *
+   * @description Decrypts a cipher text using the specified algorithm.
    * @param {string} cipher - The cipher text to decrypt.
    * @param {Uint8Array} key - The decryption key.
    * @param {('AES-GCM' | 'AES-CTR' | 'AES-CBC')} algorithmType - The algorithm to use for decryption.

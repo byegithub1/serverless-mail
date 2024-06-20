@@ -7,11 +7,10 @@ import { Nvll } from 'environment'
 import { simpleParser } from 'mailparser'
 import { chalk_error } from 'helpers/chalks'
 import { clear, openFile } from 'helpers/common'
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync, unlinkSync, mkdirSync } from 'fs'
 
 /**
- * Waits for the user to press Enter to continue.
- *
+ * @description Waits for the user to press Enter to continue.
  * @returns {Promise<void>}
  */
 const waitForUser = async (): Promise<void> => {
@@ -25,25 +24,24 @@ const waitForUser = async (): Promise<void> => {
 }
 
 /**
- * Opens a local email based on its S3 object key.
- *
+ * @description Opens a local email based on its S3 object key.
  * @returns {Promise<void>}
  */
 const handler = async (): Promise<void> => {
+  const mailboxDir = path.resolve(Nvll.env.LOCAL_MAILBOX_DIRECTORY || '')
+  if (!existsSync(mailboxDir)) mkdirSync(mailboxDir)
+
   try {
     const { objectKey: localObjectKey } = await inquirer.prompt([
       {
         type: 'input',
         name: 'objectKey',
         message: "Enter the S3 object key (or type '/r' to return):",
-        validate: (input) => !!input || 'S3 object key is required.'
+        validate: (input) => (input.trim() ? true : 'S3 object key is required.')
       }
     ])
 
-    if (localObjectKey.toLowerCase() === '/r') {
-      clear()
-      return
-    }
+    if (localObjectKey.toLowerCase() === '/r') return
 
     const { LOCAL_MAILBOX_DIRECTORY, LOCAL_DEFAULT_ENCRYPTION, LOCAL_DEFAULT_ENCRYPTION_TYPE, LOCAL_DEFAULT_ENCRYPTION_KEY } = Nvll.env
 
@@ -71,11 +69,13 @@ const handler = async (): Promise<void> => {
           const tempEmailFilePath = path.resolve(LOCAL_MAILBOX_DIRECTORY, '..', '.email-temp.eml')
 
           writeFileSync(tempEmailFilePath, decryptedEmail, 'utf8')
+
           const { from } = await simpleParser(decryptedEmail)
           const sender: string = `${from?.value[0].name} <${from?.value[0].address}>`
-          console.error(
-            chalk_error(`\nClose the program that opened the email,\nthere is an unencrypted temporary file containing emails from ${sender}.\n`)
-          )
+          const warning_msgS1: string = 'Close the program that opened the email,'
+          const warning_msgS2: string = 'there is an unencrypted temporary file containing emails from '
+
+          console.error(chalk_error(`\n${warning_msgS1}\n${warning_msgS2}${sender}.\n`))
 
           await openFile(tempEmailFilePath)
           await waitForUser()
@@ -88,7 +88,6 @@ const handler = async (): Promise<void> => {
         return
       }
     }
-
     await openFile(emailFilePath)
     clear()
   } catch (error: any) {

@@ -2,8 +2,7 @@ import moment from 'moment'
 
 export default class dateFormat {
   /**
-   * Returns the time in the format HH:mm AM/PM as a string.
-   *
+   * @description Returns the time in the format HH:mm AM/PM as a string.
    * @param {Date} date - The date object to format.
    * @returns {string} The formatted time string.
    */
@@ -16,8 +15,7 @@ export default class dateFormat {
   }
 
   /**
-   * Returns the date in the format "Day, Month DaySuffix, Year at HH:mm AM/PM" as a string.
-   *
+   * @description Returns the date in the format "Day, Month DaySuffix, Year at HH:mm AM/PM" as a string.
    * @param {Date} date - The date object to format.
    * @returns {string} The formatted date string.
    */

@@ -3,8 +3,7 @@ import os from 'os'
 import { spawn } from 'child_process'
 
 /**
- * Clears the console output based on the operating system.
- *
+ * @description Clears the console output based on the operating system.
  * @return {void}
  */
 const clear = (): void => {
@@ -24,8 +23,7 @@ const clear = (): void => {
 }
 
 /**
- * Generates a random readable string.
- *
+ * @description Generates a random readable string.
  * @param {number} length - The length of the string (must be a positive integer).
  * @returns {string} The generated string (a sequence of printable ASCII characters).
  */
@@ -39,8 +37,7 @@ const randomReadableString = (length: number): string => {
 }
 
 /**
- * Opens a file in the default application for the platform.
- *
+ * @description Opens a file in the default application for the platform.
  * @param {string} filePath - The path of the file to open.
  * @returns {Promise<void>} A promise that resolves when the file is opened.
  */

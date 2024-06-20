@@ -24,14 +24,7 @@ const handler = async (): Promise<void> => {
     const newEmails = s3Emails.filter((s3Email) => !localEmails.some((localEmail) => s3Email.Key.includes(localEmail.ObjectKey)))
 
     if (newEmails.length >= 1) {
-      const columns: TableUserConfig['columns'] = [
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'center' }
-      ]
+      const columns: TableUserConfig['columns'] = [...Array(5).fill({ alignment: 'left' }), { alignment: 'center' }]
       const newDataEmails: unknown[][] = [
         [
           chalk_info('Last Modified'),
@@ -53,9 +46,7 @@ const handler = async (): Promise<void> => {
 
       spinner.succeed(`${chalk_success('New Emails found:')} (${chalk_info(newDataEmails.length)})`)
       console.log(table(newDataEmails, configTable(columns)))
-    } else {
-      spinner.fail(chalk_error('No new emails found.'))
-    }
+    } else spinner.fail(chalk_error('No new emails found.'))
   } catch (error: any) {
     spinner.fail(chalk_error(`Error checking for new emails: ${error.message}`))
   }

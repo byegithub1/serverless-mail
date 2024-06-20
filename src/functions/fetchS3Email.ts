@@ -1,18 +1,22 @@
+import path from 'path'
 import inquirer from 'inquirer'
 
 import ora, { type Ora } from 'ora'
 
 import { Nvll } from 'environment'
+import { existsSync, mkdirSync } from 'fs'
 import { randomReadableString } from 'helpers/common'
 import { decryptAndSaveEmail } from 'helpers/symmetric'
 import { chalk_error, chalk_success } from 'helpers/chalks'
 
 /**
- * Fetches and decrypts a single S3 email.
- *
+ * @description Fetches and decrypts a single S3 email.
  * @returns {Promise<void>}
  */
 const handler = async (): Promise<void> => {
+  const mailboxDir = path.resolve(Nvll.env.LOCAL_MAILBOX_DIRECTORY || '')
+  if (!existsSync(mailboxDir)) mkdirSync(mailboxDir)
+
   const { objectKey } = await inquirer.prompt([
     {
       type: 'input',
@@ -21,6 +25,7 @@ const handler = async (): Promise<void> => {
       validate: (input) => (input ? true : 'S3 object key is required.')
     }
   ])
+
   if (objectKey.toLowerCase() === '/r') return
 
   let shuffledString: string = chalk_error(`${Nvll.env.PREFIX}/${objectKey}`)
@@ -28,8 +33,8 @@ const handler = async (): Promise<void> => {
   const emailKey: string = `${Nvll.env.PREFIX}/${objectKey}`
   const spinner: Ora = ora(`Decrypting ${shuffledString}...`)
   spinner.color = 'red'
-  spinner.start()
 
+  spinner.start()
   const interval = setInterval(() => {
     shuffledString = randomReadableString(64)
     spinner.text = `Decrypting ${chalk_error(shuffledString)}...`

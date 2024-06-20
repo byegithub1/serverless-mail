@@ -6,8 +6,8 @@ Serverless email solution, read the [Essential Documents](#essential-documents-f
   - [Production Setup](#production-setup)
   - [Development Setup](#development-setup)
     - [This is optional, but just try these baozi](#this-is-optional-but-just-try-these-baozi)
-    - [Install](#install)
-    - [Upgrade](#upgrade)
+      - [Install](#install)
+      - [Upgrade](#upgrade)
   - [Essential Documents for Your Reference](#essential-documents-for-your-reference)
 
 ## Production Setup
@@ -39,7 +39,7 @@ bun install <pkg>             # install a package
 bunx cowsay 'Hello, world!'   # execute a package
 ```
 
-### Install
+#### Install
 
 Bun supports Linux (x64 & arm64), macOS (x64 & Apple Silicon) and Windows (x64).
 
@@ -64,7 +64,7 @@ docker pull oven/bun
 docker run --rm --init --ulimit memlock=-1:-1 oven/bun
 ```
 
-### Upgrade
+#### Upgrade
 
 To upgrade to the latest version of Bun, run:
 

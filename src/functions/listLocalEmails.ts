@@ -6,16 +6,15 @@ import Hexadecimal from 'helpers/hexadecimal'
 import ora, { type Ora } from 'ora'
 
 import { Nvll } from 'environment'
-import { clear } from 'helpers/common'
 import { simpleParser } from 'mailparser'
 import { configTable } from 'helpers/table'
 import { table, type TableUserConfig } from 'table'
+import { clear, randomReadableString } from 'helpers/common'
 import { existsSync, readdirSync, readFileSync, mkdirSync } from 'fs'
 import { chalk_error, chalk_info, chalk_success } from 'helpers/chalks'
 
 /**
- * Reads and parses local emails.
- *
+ * @description Reads and parses local emails.
  * @returns {Promise<EmailData[]>} An array of parsed emails.
  */
 const readLocalEmails = async (): Promise<EmailData[]> => {
@@ -63,8 +62,7 @@ const readLocalEmails = async (): Promise<EmailData[]> => {
 }
 
 /**
- * Lists the locally stored emails in a table format.
- *
+ * @description Lists the locally stored emails in a table format.
  * @returns {Promise<void>} A promise that resolves when the emails are listed.
  */
 const handler = async (): Promise<void> => {
@@ -76,21 +74,15 @@ const handler = async (): Promise<void> => {
     const localEmails: EmailData[] = await readLocalEmails()
 
     if (localEmails.length >= 1) {
-      const columns: TableUserConfig['columns'] = [
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'left' },
-        { alignment: 'center' }
-      ]
+      const columns: TableUserConfig['columns'] = [...Array(4).fill({ alignment: 'left' }), { alignment: 'center' }]
       const dataEmails: unknown[][] = [
         [chalk_info('S3 Object Key'), chalk_info('From'), chalk_info('Received'), chalk_info('Subject'), chalk_info('Attachments')],
         ...localEmails.map(({ ObjectKey, From, Received, Subject, Attachments, Error }: EmailData): unknown[] => [
           chalk_success(ObjectKey) as string,
-          Error ? 'N/A' : From || 'N/A',
-          Error ? 'N/A' : Received ? dateFormat.simple(Received) : 'N/A',
-          Error ? 'N/A' : Subject && Subject.length > 64 ? Subject.substring(0, 64) + '...' : Subject || 'N/A',
-          Error ? 'N/A' : Attachments.length ? 'Available' : 'N/A'
+          Error ? chalk_error(randomReadableString(32)) : From || 'N/A',
+          Error ? chalk_error('0000-00-00 00:00:00') : Received ? dateFormat.simple(Received) : 'N/A',
+          Error ? chalk_error(randomReadableString(128)) : Subject && Subject.length > 64 ? Subject.substring(0, 64) + '...' : Subject || 'N/A',
+          Error ? chalk_error('N/A') : Attachments.length ? 'Available' : 'N/A'
         ])
       ]
 

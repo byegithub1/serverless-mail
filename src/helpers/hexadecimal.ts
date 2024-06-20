@@ -76,9 +76,7 @@ export default class Hexadecimal {
    */
   public static hexToBytes(hex: string): number[] {
     const bytes: number[] = []
-    for (let i = 0; i < hex.length; i += 2) {
-      bytes.push(parseInt(hex.substring(i, i + 2), 16) as number)
-    }
+    for (let i = 0; i < hex.length; i += 2) bytes.push(parseInt(hex.substring(i, i + 2), 16) as number)
     return bytes
   }
 
@@ -99,7 +97,6 @@ export default class Hexadecimal {
    * @returns {Uint8Array} - The Uint8Array of bytes.
    */
   public static hexToUint8Array(hex: string): Uint8Array {
-    const byteArray: number[] = this.hexToBytes(hex)
-    return new Uint8Array(byteArray)
+    return new Uint8Array(this.hexToBytes(hex))
   }
 }

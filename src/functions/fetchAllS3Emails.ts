@@ -1,15 +1,22 @@
+import path from 'path'
+
 import ora, { type Ora } from 'ora'
 
-import { clear, randomReadableString } from 'helpers/common'
+import { Nvll } from 'environment'
+import { existsSync, mkdirSync } from 'fs'
 import { chalk_error, chalk_success } from 'helpers/chalks'
+import { clear, randomReadableString } from 'helpers/common'
 import { s3EncryptedEmails, decryptAndSaveEmail } from 'helpers/symmetric'
 
 /**
- * Fetches all S3 emails and decrypts them, saving them locally.
- *
+ * @description Fetches all S3 emails and decrypts them, saving them locally.
  * @returns {Promise<void>}
  */
 const handler = async (): Promise<void> => {
+  const mailboxDir = path.resolve(Nvll.env.LOCAL_MAILBOX_DIRECTORY || '')
+  if (!existsSync(mailboxDir)) mkdirSync(mailboxDir)
+
+  const spinLog: Ora = ora()
   try {
     const s3Emails = await s3EncryptedEmails()
     for (const email of s3Emails) {
@@ -24,14 +31,13 @@ const handler = async (): Promise<void> => {
       }, 200)
 
       await decryptAndSaveEmail(email.Key)
-
       clearInterval(interval)
       spinner.succeed(chalk_success('Successfully received and saved.'))
     }
     clear()
-    console.log(chalk_success('Successfully received and saved all emails.'))
+    spinLog.succeed(chalk_success('Successfully received and saved all emails.'))
   } catch (error: any) {
-    console.error(chalk_error(`Error receiving all emails: ${error.message}`))
+    spinLog.fail(chalk_error(`Error receiving all emails: ${error.message}`))
   }
 }
 
